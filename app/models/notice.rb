@@ -102,6 +102,10 @@ class Notice
     end
   end
 
+  def self.scrub!
+    scoped.update_all(:backtrace => [], :request => {}, :notifier => {})
+  end
+
   protected
 
   def increase_counter_cache

@@ -21,5 +21,27 @@ namespace :errbit do
       Problem.resolved.each {|problem| problem.destroy }
       puts "=== Cleared #{count} resolved errors from the database." if count > 0
     end
+
+    desc "Scrub backtrace and other data from resolved notices."
+    task :scrub_resolved_notices => :environment do
+      count = Problem.resolved.count
+      Problem.resolved.each {|problem| problem.notices.scrub! }
+      puts "=== Scrubbed notices for #{count} resolved errors from the database." if count > 0
+    end
+
+    desc "Scrub backtrace and other data from all but most recent 100 notices for problems with more than 100 notices."
+    task :scrub_extraneous_notices => :environment do
+      count = Problem.unresolved.where(:notices_count.gt => 100).count
+      Problem.unresolved.where(:notices_count.gt => 100).each {|problem|
+        notice_count = problem.notices.count
+        # HACK: Can't just call with #limit scope, because
+        # mongoid doesn't play nicely with #limit, unless
+        # using #to_a at end.
+        # See https://github.com/mongoid/mongoid/issues/1100
+        hundredth = problem.notices.limit(1).skip(notice_count - 100).first
+        problem.notices.where(:created_at.lt => hundredth.created_at).scrub!
+      }
+      puts "=== Scrubbed all but most recent 100 notices for #{count} errors from the database." if count > 0
+    end
   end
 end
