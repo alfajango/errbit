@@ -1,3 +1,10 @@
+GIT
+  remote: git://github.com/JangoSteve/heroku-mongo-backup.git
+  revision: fba5ed66724b88064341c8debd0b216afedd0c07
+  branch: more-info
+  specs:
+    heroku-mongo-backup (0.3.9)
+
 GEM
   remote: http://rubygems.org/
   specs:
@@ -35,6 +42,10 @@ GEM
       multi_json (~> 1.0)
     addressable (2.2.8)
     arel (3.0.2)
+    aws-s3 (0.6.3)
+      builder
+      mime-types
+      xml-simple
     bcrypt-ruby (3.0.1)
     bson (1.3.1)
     bson_ext (1.3.1)
@@ -257,6 +268,7 @@ GEM
     webmock (1.8.6)
       addressable (>= 2.2.7)
       crack (>= 0.1.7)
+    xml-simple (1.1.1)
     xpath (0.1.4)
       nokogiri (~> 1.3)
     yajl-ruby (1.1.0)
@@ -267,6 +279,7 @@ PLATFORMS
 DEPENDENCIES
   SystemTimer
   actionmailer_inline_css (~> 1.3.0)
+  aws-s3
   bson (= 1.3.1)
   bson_ext (= 1.3.1)
   capybara
@@ -277,6 +290,7 @@ DEPENDENCIES
   execjs
   fabrication (~> 1.3.0)
   haml
+  heroku-mongo-backup!
   hoptoad_notifier (~> 2.4)
   htmlentities (~> 4.3.0)
   inherited_resources

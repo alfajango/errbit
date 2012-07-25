@@ -31,6 +31,9 @@ gem 'rack-ssl-enforcer'
 gem 'fabrication', "~> 1.3.0"   # Both for tests, and loading demo data
 gem 'rails_autolink', '~> 1.0.9'
 
+gem 'aws-s3'
+gem 'heroku-mongo-backup', :git => 'git://github.com/JangoSteve/heroku-mongo-backup.git', :branch => 'more-info'
+
 platform :ruby do
   gem 'mongo', '= 1.3.1'
   gem 'bson', '= 1.3.1'
