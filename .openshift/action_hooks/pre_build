@@ -4,8 +4,8 @@
 # before the build step.  This script gets executed directly, so it
 # could be python, php, ruby, etc.
 
-data="${OPENSHIFT_DATA_DIR}/assets"
-assets="${OPENSHIFT_REPO_DIR}/public"
+data="${OPENSHIFT_DATA_DIR}assets"
+assets="${OPENSHIFT_REPO_DIR}public"
 echo "Symlinking assets $assets to $data"
 
 # Make the data directory if it doesn't exist
