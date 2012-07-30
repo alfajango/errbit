@@ -5,7 +5,7 @@
 # could be python, php, ruby, etc.
 
 data="${OPENSHIFT_DATA_DIR}assets"
-assets="${OPENSHIFT_REPO_DIR}public"
+assets="${OPENSHIFT_REPO_DIR}public/assets"
 echo "Symlinking assets $assets to $data"
 
 # Make the data directory if it doesn't exist
