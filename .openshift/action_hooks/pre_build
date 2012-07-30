@@ -18,7 +18,7 @@ fi
 find $assets/assets -maxdepth 0 -type d -empty -delete 2> /dev/null
 
 # Try to make the symlink
-ln -s $data $assets 2> /dev/null
+echo $(ln -s $data $assets) # 2> /dev/null
 if [ $? -gt 0 ]; then
   echo "Unable to create symlink to assets directory, using existing directory in repository"
 else
