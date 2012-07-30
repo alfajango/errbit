@@ -4,9 +4,9 @@
 # before the build step.  This script gets executed directly, so it
 # could be python, php, ruby, etc.
 
-echo "Symlinking assets..."
 data="${OPENSHIFT_DATA_DIR}/assets"
 assets="${OPENSHIFT_REPO_DIR}/public"
+echo "Symlinking assets $assets to $data"
 
 # Make the data directory if it doesn't exist
 if [ ! -d "$data" ]; then
@@ -18,7 +18,7 @@ fi
 find $assets/assets -maxdepth 0 -type d -empty -delete 2> /dev/null
 
 # Try to make the symlink
-echo $(ln -s $data $assets) # 2> /dev/null
+ln -s $data $assets 2> /dev/null
 if [ $? -gt 0 ]; then
   echo "Unable to create symlink to assets directory, using existing directory in repository"
 else
