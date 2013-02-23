@@ -72,7 +72,7 @@ class ProblemsController < ApplicationController
       end
     end
 
-    redirect_to app_err_path(@app, @problem)
+    redirect_to app_problem_path(@app, @problem)
   end
 
   def resolve
