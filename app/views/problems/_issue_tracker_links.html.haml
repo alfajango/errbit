@@ -13,3 +13,7 @@
         %span= link_to 'create issue', create_issue_app_problem_path(@app, @problem), :method => :post, :class => "github_create create-issue"
     - if @app.issue_tracker_configured? && !@app.issue_tracker.is_a?(GithubIssuesTracker)
       %span= link_to 'create issue', create_issue_app_problem_path(@app, @problem), :method => :post, :class => "#{@app.issue_tracker.label}_create create-issue"
+      = form_tag link_issue_app_err_path(@app, @problem), :method => :put do
+        = text_field_tag :issue_id, nil, :class => 'link-issue'
+        %span
+          = submit_tag 'link issue', :class => "#{@app.issue_tracker.label}_link link-issue"
