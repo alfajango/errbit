@@ -65,9 +65,9 @@ gem 'aws-s3'
 gem 'heroku-mongo-backup', :git => 'git://github.com/JangoSteve/heroku-mongo-backup.git', :branch => 'more-info'
 
 platform :ruby do
-  gem 'mongo', '= 1.6.2'
-  gem 'bson', '= 1.6.2'
-  gem 'bson_ext', '= 1.6.2'
+  gem 'mongo', '>= 1.12'
+  gem 'bson', '>= 1.12'
+  gem 'bson_ext', '>= 1.12'
 end
 
 gem 'ri_cal'
