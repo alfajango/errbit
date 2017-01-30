@@ -1,4 +1,5 @@
 source 'http://rubygems.org'
+ruby "2.1.10"
 
 gem 'rails', '3.2.11'
 gem 'mongoid', '~> 2.4.10'
