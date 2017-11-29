@@ -42,7 +42,7 @@ namespace :errbit do
         # using #to_a at end.
         # See https://github.com/mongoid/mongoid/issues/1100
         if notice_count > 100 # sometimes cached :notices_count isn't accurate
-          hundredth = problem.notices.limit(1).skip(notice_count - 100).first
+          hundredth = problem.notices.limit(1).skip(notice_count - 100).only(:created_at).first
           problem.notices.where(:created_at.lt => hundredth.created_at).scrub!
         else
           count -= 1
