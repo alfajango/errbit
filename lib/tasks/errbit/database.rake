@@ -36,16 +36,31 @@ namespace :errbit do
     task :scrub_extraneous_notices => :environment do
       count = Problem.unresolved.where(:notices_count.gt => 100).count
       Problem.unresolved.where(:notices_count.gt => 100).each {|problem|
-        notice_count = problem.notices.count
-        # HACK: Can't just call with #limit scope, because
-        # mongoid doesn't play nicely with #limit, unless
-        # using #to_a at end.
-        # See https://github.com/mongoid/mongoid/issues/1100
-        if notice_count > 100 # sometimes cached :notices_count isn't accurate
-          hundredth = problem.notices.limit(1).skip(notice_count - 100).only(:created_at).first
-          problem.notices.where(:created_at.lt => hundredth.created_at).scrub!
-        else
-          count -= 1
+        tries = 3
+        begin
+          # Not the cleanest, but the normal mongoid way is timing out
+          puts "Cleaning up problem #{problem.id}"
+          err_ids = problem.errs.only(:_id).to_a.map(&:_id)
+          notice_count = Notice.collection.driver.find({err_id: {"$in" => err_ids}}, fields: [:_id]).count
+          # HACK: Can't just call with #limit scope, because
+          # mongoid doesn't play nicely with #limit, unless
+          # using #to_a at end.
+          # See https://github.com/mongoid/mongoid/issues/1100
+          if notice_count > 100 # sometimes cached :notices_count isn't accurate
+            hundredth = nil
+            Notice.collection.driver.find({err_id: {"$in" => err_ids}}, fields: [:created_at], limit: 1, skip: notice_count - 100, timeout: false) do |cursor|
+              hundredth = cursor.first
+            end
+            problem.notices.where(:created_at.lt => hundredth["created_at"]).scrub!
+          else
+            count -= 1
+          end
+        rescue Mongo::OperationTimeout => e
+          puts "Encountered exception #{e.class}: #{e.message}"
+          unless (tries -= 1) == 0
+            puts "Retrying, remaining tries: #{tries}"
+            retry
+          end
         end
       }
       puts "=== Scrubbed all but most recent 100 notices for #{count} errors from the database." if count > 0
@@ -54,7 +69,17 @@ namespace :errbit do
 
     desc "Compact notices collection"
     task :compact_notices => :environment do
+      # This times out with the later versions of mongoid v2.4.x d and there
+      # are no obvious good ways to override the socket timeout
       puts "=== ran repairDatabase to free physical space" if Mongoid.database.command({ "repairDatabase" => 1 })
+
+      # This doesn't work on heroku
+      #url = "#{Mongoid.master.client.host}:#{Mongoid.master.client.port}/#{Mongoid.master.client.auths.first[:db_name]}"
+      #username = Mongoid.master.client.auths.first[:username]
+      #password = Mongoid.master.client.auths.first[:password]
+      #puts "=== running repairDatabase to free physical space"
+      #`mongo #{url} -u #{username} -p #{password} --eval "db.repairDatabase()"`
+      #puts "=== done running repairDatabase"
     end
   end
 end
